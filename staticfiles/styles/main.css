@@ -1,0 +1,283 @@
+/* ------------------  Global Styling ------------------ */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap');
+
+
+:root {
+    --shaddow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+body {
+    background-color: #404040;
+    font-family: 'Roboto', sans-serif;
+}
+
+
+/* ------------------  Register Page ------------------ */
+
+#form-container {
+    width: 400px;
+    box-shadow: var(--shaddow);
+    background-color: #feda6a;
+    padding: 30px;
+    border-radius: 5px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#logo {
+    display: block;
+    width: 100px;
+    margin: 0 auto;
+}
+
+#welcome-message {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #393f4d;
+}
+
+#welcome-message h1 {
+    font-size: 36px;
+    color: #393f4d;
+}
+
+
+#welcome-message p {
+    font-size: 16px;
+    color: rgb(97, 98, 105);
+    font-weight: 300;
+}
+
+.form-field {
+    margin-bottom: 20px;
+}
+
+.form-field label {
+    font-size: 16px;
+    line-height: 1.7em;
+}
+
+.form-field input {
+    width: 100%;
+    border: 2px solid rgba(198, 202, 219, 1);
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.form-field input[type='submit'] {
+    background-color: #393f4d;
+    border: none;
+    color: #feda6a;
+}
+
+
+@media screen and (max-width:450px) {
+    #form-container {
+        width: 95%;
+
+    }
+
+    #welcome-message h1 {
+        font-size: 24px;
+    }
+
+}
+
+
+/* ----------------- Room Styling ------------------*/
+#room-name-wrapper {
+    text-align: center;
+    font-size: 18px;
+}
+
+#video-streams {
+    display: flex;
+    flex-wrap: wrap;
+    height: 85vh;
+    width: 95%;
+    margin: 0 auto;
+}
+
+.video-container {
+    flex-basis: 500px;
+    flex-grow: 1;
+    max-height: 100%;
+    min-height: 350px;
+    border: 1px solid rgb(75, 93, 172);
+    border-radius: 5px;
+    margin: 2px;
+    background-color: rgba(198, 202, 219, 1);
+    position: relative;
+}
+
+.video-player {
+    height: 100%;
+    width: 100%;
+}
+
+.video-player>* {
+    border-radius: 5px;
+}
+
+.username-wrapper {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.3);
+    width: fit-content;
+    padding: 10px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+}
+
+@media screen and (max-width:1650px) {
+    .video-container {
+        flex-basis: 300px;
+        min-height: 200px;
+    }
+}
+
+
+/* ----------------- Room Styling | Controls ------------------*/
+
+#controls-wrapper {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    column-gap: 1em;
+    position: fixed;
+    bottom: 20px;
+}
+
+.control-icon {
+    height: 20px;
+    width: 20px;
+    box-shadow: var(--shaddow);
+    background-color: #fff;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+
+}
+
+#leave-btn {
+    background-color: rgb(255, 80, 80, 1);
+}
+
+/* Apply the grid layout to the parent container */
+.container {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Optional styling for the columns */
+.videos {
+    border: 1px solid #f9f871;
+    /* Add a border for clarity */
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 10px 0px #9c9a9a;
+}
+
+.transcriptions {
+    border: 1px solid 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    ;
+    /* Add a border for clarity */
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 10px 0px #9c9a9a;
+
+}
+
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        /* Stack columns on smaller screens */
+    }
+}
+
+.transcription-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    height: 100%;
+    text-align: center;
+}
+
+#start-transcription-btn {
+
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+#start-transcription-btn:hover {
+    background-color: #0056b3;
+}
+
+.mytext {
+    border:1px solid #393f4d;
+    border-right:none;
+    padding:4px;
+    margin:0px;
+    float:left;
+    height:32px;
+    overflow:hidden;
+    line-height:16px;
+    width: 300px;
+    margin-left: 54px;
+    border-radius: 20px 0px 0px 20px;
+  }
+
+  .mic {
+      border:1px solid #393f4d;
+      background:#feda6a;
+      vertical-align:top;
+      padding:0px;
+      margin:0;
+      float:left;
+      height:42px;
+      overflow:hidden;
+      width:5em;
+      text-align:center;
+      line-height:16px;
+      border-radius: 0px 20px 20px 0px;
+  }
+  .submit {
+    border:1px solid #393f4d;
+    height: 42px;
+    width: 160px;
+    text-align: center;
+    background-color: #feda6a;
+    color: #393f4d;
+    font-weight: bold;
+    font-size: 24px;
+    font-family: "Times New Roman";
+    vertical-align:top;
+    border-radius: 20px;
+}
