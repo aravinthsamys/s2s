@@ -1,0 +1,315 @@
+{% extends 'base/main.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+  :root {
+    --clr-bg-gradient-start: #0f2027;
+    --clr-bg-gradient-mid:   #203a43;
+    --clr-bg-gradient-end:   #2c5364;
+    --clr-card-bg: rgba(255,255,255,.08);
+    --clr-card-border: rgba(255,255,255,.15);
+    --clr-card-blur: 16px;
+    --clr-accent: #00e0ff;
+    --clr-accent-hover: #66f0ff;
+    --clr-accent-warn: #ff6b6b;
+    --clr-text: #f1f5f9;
+    --clr-text-muted: #9ca3af;
+    --radius-lg: 1rem;
+    --radius-md: .5rem;
+    --gap-lg: 2rem;
+    --gap-md: 1rem;
+    --gap-sm: .5rem;
+    --trans-fast: .15s ease;
+    --trans-med: .25s ease;
+  }
+
+  body {
+    background: linear-gradient(135deg,var(--clr-bg-gradient-start),var(--clr-bg-gradient-mid),var(--clr-bg-gradient-end));
+    color: var(--clr-text);
+    font-family: 'Inter', 'Roboto', sans-serif;
+  }
+
+  .app-container {
+    max-width: 1300px; /* Increased width */
+    margin: 0 auto;
+    padding: var(--gap-lg) var(--gap-md);
+  }
+
+  .app-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1.5fr; /* Equal column widths */
+    gap: var(--gap-lg);
+    align-items: start;
+  }
+
+  @media (max-width: 991.98px) {
+    .app-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .glass-card {
+    position: relative;
+    background: var(--clr-card-bg);
+    border: 1px solid var(--clr-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--gap-lg) var(--gap-md);
+    backdrop-filter: blur(var(--clr-card-blur));
+    -webkit-backdrop-filter: blur(var(--clr-card-blur));
+    box-shadow: 0 0 2rem rgba(0,0,0,.35);
+  }
+
+  .glass-card h2 {
+    text-align: center;
+    margin-bottom: var(--gap-md);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--clr-accent-hover);
+  }
+
+  /* ---------------------- Video Section ----------------------- */
+  #room-name-wrapper p {
+    margin-bottom: var(--gap-md);
+    text-align: center;
+    color: var(--clr-text-muted);
+    font-size: .95rem;
+  }
+  #room-name-wrapper span#room-name {
+    color: var(--clr-accent);
+    font-weight: 600;
+  }
+
+  #video-streams {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(320px,100%),1fr));
+    gap: var(--gap-md);
+    margin: 0 auto var(--gap-lg);
+  }
+  #video-streams .video-container {
+    position: relative;
+    aspect-ratio: 16/9;
+    background:#000;
+    border-radius: var(--radius-md);
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.1);
+  }
+  #video-streams .video-container video,
+  #video-streams .video-container canvas,
+  #video-streams .video-container iframe {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+
+  #controls-wrapper {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:var(--gap-lg);
+    margin-top:var(--gap-md);
+    flex-wrap:wrap;
+  }
+  #controls-wrapper .icon-wrapper {
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.15);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    transition:transform var(--trans-fast), background var(--trans-fast), box-shadow var(--trans-fast);
+  }
+  #controls-wrapper .icon-wrapper:hover{
+    transform:scale(1.08);
+    background:rgba(255,255,255,.2);
+    box-shadow:0 0 0 4px rgba(0,224,255,.25);
+  }
+  #controls-wrapper .control-icon{
+    width:32px;
+    height:32px;
+	background: #0da3d1;
+
+}
+  /* ------------------- Transcription Section ------------------ */
+  .transcription-section .input-row {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:var(--gap-md);
+  }
+
+  .transcription-section .mytext {
+    flex:1;
+    padding:10px 12px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:1rem;
+  }
+
+  .transcription-section button.mic {
+    background: #ffffff;
+    border: 2px solid #53a1bd;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    cursor: pointer;
+  }
+  .transcription-section button.mic img {
+    width: 39px;
+    height: 45px;
+  }
+
+  .transcription-section button.submit {  
+	background: #0da3d1;
+    color: #fff;
+    border-radius: 6px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .transcription-section button.submit:hover {
+    background: #98be24;
+    transform: scale(1.05);
+  }
+
+  /* Sign Language Video */
+  .sign-anim-controls { text-align:center; margin-bottom: var(--gap-sm);}
+  #videoPlayer {
+    width: 100%;
+    max-width: 450px; /* Increased */
+    max-height: 350px; /* Increased */
+    border-radius: var(--radius-md);
+    background: #000;
+    border: 1px solid rgba(255,255,255,.25);
+    box-shadow: 0 0 1rem rgba(0,0,0,.75);
+  }
+  .sign-video-wrapper { text-align:center; }
+ .input-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-row .mytext {
+  flex: 1;
+  padding: 10px 50px 10px 50px; /* Add padding for buttons on both sides */
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+/* Mic Button - Left side */
+.input-row .mic {
+  position: absolute;
+  left: 5px;
+  border: 2px solid #7b9ff5;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.input-row .mic img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Send Button - Right side */
+.input-row .submit {
+  position: absolute;
+  right: 5px;
+  width: 60px;
+  height: 44px;
+  border-radius: 50%;
+  background: #7b9ff5;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.input-row .submit:hover {
+  background: #5a7de2;
+  transform: scale(1.1);
+}
+
+</style>
+
+<div class="app-container">
+  <div class="app-grid">
+
+    <!-- Live Video Room -->
+    <div class="glass-card videos">
+      <main>
+        <h2>Live Video Room</h2>
+        <section id="room-name-wrapper">
+          <p>Room Name: <span id="room-name"></span></p>
+        </section>
+        <section id="video-streams"></section>
+        <section id="controls-wrapper">
+          <div class="icon-wrapper" id="mic-wrapper">
+            <img class="control-icon" id="mic-btn" src="{% static 'images/microphone.svg' %}" alt="Mic" />
+          </div>
+          <div class="icon-wrapper" id="camera-wrapper">
+            <img class="control-icon" id="camera-btn" src="{% static 'images/video.svg' %}" alt="Camera" />
+          </div>
+          <div class="icon-wrapper" id="leave-wrapper">
+            <img class="control-icon" id="leave-btn" src="{% static 'images/leave.svg' %}" alt="Leave" />
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Transcriptions -->
+    <div class="glass-card transcriptions">
+      <div class="transcription-section">
+        <h2>Enter Text or Use Mic</h2>
+        <form id="textForm" class="input-row">
+  <input 
+    type="text" 
+    name="message" 
+    class="mytext" 
+    id="speechToText" 
+    placeholder="Type or speak..." 
+    style="text-transform:capitalize" 
+  />
+  <button type="button" class="mic" onclick="record()" aria-label="Use speech input">
+    <img src="{% static '/images/mic3.png' %}" alt="Mic" />
+  </button>
+  <button id="sendBtn" class="submit" type="submit">Send</button>
+</form>
+
+
+
+        <h2 style="font-size:1.25rem;" class="mt-4 text-center">Sign Language Animation</h2>
+        <div class="sign-video-wrapper">
+          <div class="sign-anim-controls">
+            <button class="submit" type="button" onclick="playPause()">Play/Pause</button>
+          </div>
+          <video id="videoPlayer" width="700" height="400" preload="auto" autoplay>
+            <source src="" type="video/mp4" />
+            Your browser does not support HTML5 video.
+          </video>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="text/javascript" src="{% static 'assets/AgoraRTC_N-4.8.0.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/streams.js' %}"></script>
+
+{% endblock content %}

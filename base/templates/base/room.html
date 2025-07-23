@@ -1,315 +1,593 @@
 {% extends 'base/main.html' %}
 {% load static %}
 {% block content %}
-
 <style>
-  :root {
-    --clr-bg-gradient-start: #0f2027;
-    --clr-bg-gradient-mid:   #203a43;
-    --clr-bg-gradient-end:   #2c5364;
-    --clr-card-bg: rgba(255,255,255,.08);
-    --clr-card-border: rgba(255,255,255,.15);
-    --clr-card-blur: 16px;
-    --clr-accent: #00e0ff;
-    --clr-accent-hover: #66f0ff;
-    --clr-accent-warn: #ff6b6b;
-    --clr-text: #f1f5f9;
-    --clr-text-muted: #9ca3af;
-    --radius-lg: 1rem;
-    --radius-md: .5rem;
-    --gap-lg: 2rem;
-    --gap-md: 1rem;
-    --gap-sm: .5rem;
-    --trans-fast: .15s ease;
-    --trans-med: .25s ease;
-  }
+	:root {
+		--clr-bg-gradient-start: #0f2027;
+		--clr-bg-gradient-mid: #203a43;
+		--clr-bg-gradient-end: #2c5364;
+		--clr-card-bg: rgba(255, 255, 255, .08);
+		--clr-card-border: rgba(255, 255, 255, .15);
+		--clr-card-blur: 16px;
+		--clr-accent: #00e0ff;
+		--clr-accent-hover: #66f0ff;
+		--clr-accent-warn: #ff6b6b;
+		--clr-text: #f1f5f9;
+		--clr-text-muted: #9ca3af;
+		--radius-lg: 1rem;
+		--radius-md: .5rem;
+		--gap-lg: 2rem;
+		--gap-md: 1rem;
+		--gap-sm: .5rem;
+		--trans-fast: .15s ease;
+		--trans-med: .25s ease;
+	}
 
-  body {
-    background: linear-gradient(135deg,var(--clr-bg-gradient-start),var(--clr-bg-gradient-mid),var(--clr-bg-gradient-end));
-    color: var(--clr-text);
-    font-family: 'Inter', 'Roboto', sans-serif;
-  }
+	body {
+		background-color: #0f364d;
+		color: rgb(52, 179, 230);
+	}
 
-  .app-container {
-    max-width: 1300px; /* Increased width */
-    margin: 0 auto;
-    padding: var(--gap-lg) var(--gap-md);
-  }
+	#room-name-wrapper {
+		text-align: center;
+		font-size: 18px;
+	}
 
-  .app-grid {
-    display: grid;
-    grid-template-columns: 1.5fr 1.5fr; /* Equal column widths */
-    gap: var(--gap-lg);
-    align-items: start;
-  }
+	.topicmoon {
+		font-weight: 800;
+		font-size: 30px;
+		text-align: center;
+	}
 
-  @media (max-width: 991.98px) {
-    .app-grid {
-      grid-template-columns: 1fr;
-    }
-  }
+	#video-streams {
+		display: flex;
+		flex-wrap: wrap;
+		height: 85vh;
+		width: 95%;
+		margin: 0 auto;
+	}
 
-  .glass-card {
-    position: relative;
-    background: var(--clr-card-bg);
-    border: 1px solid var(--clr-card-border);
-    border-radius: var(--radius-lg);
-    padding: var(--gap-lg) var(--gap-md);
-    backdrop-filter: blur(var(--clr-card-blur));
-    -webkit-backdrop-filter: blur(var(--clr-card-blur));
-    box-shadow: 0 0 2rem rgba(0,0,0,.35);
-  }
+	.video-container {
+		flex-basis: 500px;
+		flex-grow: 1;
+		max-height: 100%;
+		min-height: 350px;
+		border: 1px solid rgb(75, 93, 172);
+		border-radius: 5px;
+		margin: 2px;
+		background-color: rgba(198, 202, 219, 1);
+		position: relative;
+	}
 
-  .glass-card h2 {
-    text-align: center;
-    margin-bottom: var(--gap-md);
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--clr-accent-hover);
-  }
+	.video-player {
+		height: 100%;
+		width: 100%;
 
-  /* ---------------------- Video Section ----------------------- */
-  #room-name-wrapper p {
-    margin-bottom: var(--gap-md);
-    text-align: center;
-    color: var(--clr-text-muted);
-    font-size: .95rem;
-  }
-  #room-name-wrapper span#room-name {
-    color: var(--clr-accent);
-    font-weight: 600;
-  }
+	}
 
-  #video-streams {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(320px,100%),1fr));
-    gap: var(--gap-md);
-    margin: 0 auto var(--gap-lg);
-  }
-  #video-streams .video-container {
-    position: relative;
-    aspect-ratio: 16/9;
-    background:#000;
-    border-radius: var(--radius-md);
-    overflow:hidden;
-    border:1px solid rgba(255,255,255,.1);
-  }
-  #video-streams .video-container video,
-  #video-streams .video-container canvas,
-  #video-streams .video-container iframe {
-    width:100%;
-    height:100%;
-    object-fit:cover;
-  }
+	.video-player>* {
+		border-radius: 5px;
+	}
 
-  #controls-wrapper {
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:var(--gap-lg);
-    margin-top:var(--gap-md);
-    flex-wrap:wrap;
-  }
-  #controls-wrapper .icon-wrapper {
-    width:64px;
-    height:64px;
-    border-radius:50%;
-    background:rgba(255,255,255,.1);
-    border:1px solid rgba(255,255,255,.15);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    cursor:pointer;
-    transition:transform var(--trans-fast), background var(--trans-fast), box-shadow var(--trans-fast);
-  }
-  #controls-wrapper .icon-wrapper:hover{
-    transform:scale(1.08);
-    background:rgba(255,255,255,.2);
-    box-shadow:0 0 0 4px rgba(0,224,255,.25);
-  }
-  #controls-wrapper .control-icon{
-    width:32px;
-    height:32px;
-	background: #0da3d1;
+	.username-wrapper {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		z-index: 9999;
+		background-color: rgba(0, 0, 0, 0.3);
+		width: fit-content;
+		padding: 10px;
+		border-radius: 5px;
+		color: #fff;
+		font-size: 14px;
+	}
 
+	.vidiv {
+		background-color: #424140;
+		border-radius: 15px;
+		padding: 20px;
+	}
+
+	@media screen and (max-width:1650px) {
+		.video-container {
+			flex-basis: 300px;
+			min-height: 200px;
+		}
+
+	}
+
+
+	/* ----------------- Room Styling | Controls ------------------*/
+
+	#controls-wrapper {
+		display: flex;
+		width: 100%;
+		justify-content: center;
+		column-gap: 2em;
+		position: relative;
+		bottom: 70px;
+
+	}
+
+	.control-icon {
+		height: 20px;
+		width: 20px;
+		box-shadow: var(--shaddow);
+		background-color: #fff;
+		cursor: pointer;
+		padding: 10px;
+		border-radius: 5px;
+
+	}
+
+	#leave-btn {
+		background-color: rgb(255, 80, 80, 1);
+	}
+
+	/* Apply the grid layout to the parent container */
+	.container {
+		display: grid;
+		grid-template-columns: 3fr 1fr;
+		gap: 20px;
+		padding: 20px;
+	}
+
+	/* Optional styling for the columns */
+	.videos {
+		border: 5px solid #ffffff;
+		/* Add a border for clarity */
+		padding: 10px;
+		border-radius: 20px;
+		box-shadow: 0px 0px 10px 0px #fafafa;
+	}
+
+	.transcriptions {
+		border: 5px solid rgb(250, 250, 250);
+		/* Add a border for clarity */
+		padding: 10px;
+		border-radius: 20px;
+		box-shadow: 0px 0px 10px 0px #9c9a9a;
+
+	}
+	.mobile{
+		display: none;
+	}
+
+	@media (max-width: 500px) {
+.mobile{
+	display: block;
 }
-  /* ------------------- Transcription Section ------------------ */
-  .transcription-section .input-row {
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:var(--gap-md);
-  }
-
-  .transcription-section .mytext {
-    flex:1;
-    padding:10px 12px;
-    border:1px solid #ccc;
-    border-radius:6px;
-    font-size:1rem;
-  }
-
-  .transcription-section button.mic {
-    background: #ffffff;
-    border: 2px solid #53a1bd;
-    border-radius: 50%;
-    width: 42px;
-    height: 42px;
-    padding: 0;
-    cursor: pointer;
-  }
-  .transcription-section button.mic img {
-    width: 39px;
-    height: 45px;
-  }
-
-  .transcription-section button.submit {  
-	background: #0da3d1;
-    color: #fff;
-    border-radius: 6px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  .transcription-section button.submit:hover {
-    background: #98be24;
-    transform: scale(1.05);
-  }
-
-  /* Sign Language Video */
-  .sign-anim-controls { text-align:center; margin-bottom: var(--gap-sm);}
-  #videoPlayer {
-    width: 100%;
-    max-width: 450px; /* Increased */
-    max-height: 350px; /* Increased */
-    border-radius: var(--radius-md);
-    background: #000;
-    border: 1px solid rgba(255,255,255,.25);
-    box-shadow: 0 0 1rem rgba(0,0,0,.75);
-  }
-  .sign-video-wrapper { text-align:center; }
- .input-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
+.mobilemain{
+	display: none;
 }
+		.container {
+			grid-template-columns: 0.5fr;
+			width: 330px;
+			display: flex;
+			flex-direction: column;
 
-.input-row .mytext {
-  flex: 1;
-  padding: 10px 50px 10px 50px; /* Add padding for buttons on both sides */
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-}
+		}
 
-/* Mic Button - Left side */
-.input-row .mic {
-  position: absolute;
-  left: 5px;
-  border: 2px solid #7b9ff5;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  background: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
+		.transcriptions {
+			border: 2px solid rgb(250, 250, 250);
+		}
 
-.input-row .mic img {
-  width: 20px;
-  height: 20px;
-}
+		.videos {
+			border: 2px solid #ffffff;
+			height: 560px;
+		}
 
-/* Send Button - Right side */
-.input-row .submit {
-  position: absolute;
-  right: 5px;
-  width: 60px;
-  height: 44px;
-  border-radius: 50%;
-  background: #7b9ff5;
-  color: #fff;
-  font-weight: bold;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
+		button#sendBtn.submit {
+			font-size: 15px;
+			height: 30px;
+			width: 130px;
+			margin-top: 15px;
+		}
 
-.input-row .submit:hover {
-  background: #5a7de2;
-  transform: scale(1.1);
-}
+		h2 {
+			margin-top: 10px;
+		}
 
+		.mytext {
+			width: 200px;
+		}
+
+		video#videoPlayer {
+			width: 270px;
+		}
+
+		div.videos {
+			height: 500px;
+		}
+
+		main {
+			height: 150px;
+			font-size: 10px;
+		}
+
+		section#video-streams {
+			height: 240px;
+		}
+
+		#controls-wrapper {
+			bottom: -175px;
+
+		}
+
+		.control-icon {
+			height: 12px;
+			width: 12px;
+		}
+
+		div.transcriptions {
+			height: 550px;
+		}
+
+		video#videoPlayer {
+			height: 200px;
+		}
+
+		input#speechToText.mytext {
+			width: 230px;
+			border-radius: 20px;
+			margin-left: 30px;
+		}
+
+		button.mic {
+			display: none;
+		}
+
+		div.container {
+			padding: 5px;
+		}
+
+		/*
+		.topicmoon {
+		position: relative;
+		font-size: 10px;
+	}
+	body{
+		font-size: 13px;
+		width: 300px;
+	}
+	#video-streams {
+		display: flex;
+		flex-wrap: wrap;
+		height: 40vh;
+		width: 95%;
+		margin: 0 auto;
+	}
+	.video-container {
+		max-height: 50%;
+		min-height: 200px;
+	}
+	.vidiv {
+		width: 300px;
+	} */
+	}
+
+	.transcription-section {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		height: 100%;
+		text-align: center;
+	}
+
+	#start-transcription-btn {
+
+		padding: 10px 20px;
+		background-color: #f5f6f7;
+		color: white;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		font-size: 16px;
+		transition: background-color 0.3s;
+	}
+
+	#start-transcription-btn:hover {
+		background-color: #0056b3;
+	}
+
+	.mytext {
+		border: 1px solid #393f4d;
+		border-right: none;
+		padding: 4px;
+		margin: 0px;
+		float: left;
+		height: 32px;
+		overflow: hidden;
+		line-height: 16px;
+		width: 300px;
+		margin-left: 54px;
+		border-radius: 20px 0px 0px 20px;
+	}
+
+	.mic {
+		border: 1px solid #070101;
+		background: #ffffff;
+		vertical-align: top;
+		padding: 0px;
+		margin: 0;
+		float: left;
+		cursor: pointer;
+		height: 42px;
+		overflow: hidden;
+		width: 5em;
+		text-align: center;
+		line-height: 16px;
+		border-radius: 0px 20px 20px 0px;
+	}
+
+	.submit {
+		border: 1px solid #393f4d;
+		height: 42px;
+		width: 160px;
+		cursor: pointer;
+		text-align: center;
+		background-color: #ffffff;
+		color: #393f4d;
+		font-weight: bold;
+		font-size: 24px;
+		font-family: "Times New Roman";
+		vertical-align: top;
+		border-radius: 20px;
+	}
+
+	#videoPlayer {
+		width: 600px;
+		height: 350px;
+	}
 </style>
+<center>
+	<h3 class="text-center my-4 topicmoon text-light">SpeechToSign</h3>
+</center>
+<div class="container">
 
-<div class="app-container">
-  <div class="app-grid">
 
-    <!-- Live Video Room -->
-    <div class="glass-card videos">
-      <main>
-        <h2>Live Video Room</h2>
-        <section id="room-name-wrapper">
-          <p>Room Name: <span id="room-name"></span></p>
-        </section>
-        <section id="video-streams"></section>
-        <section id="controls-wrapper">
-          <div class="icon-wrapper" id="mic-wrapper">
-            <img class="control-icon" id="mic-btn" src="{% static 'images/microphone.svg' %}" alt="Mic" />
-          </div>
-          <div class="icon-wrapper" id="camera-wrapper">
-            <img class="control-icon" id="camera-btn" src="{% static 'images/video.svg' %}" alt="Camera" />
-          </div>
-          <div class="icon-wrapper" id="leave-wrapper">
-            <img class="control-icon" id="leave-btn" src="{% static 'images/leave.svg' %}" alt="Leave" />
-          </div>
-        </section>
-      </main>
-    </div>
+	<div class="videos">
+		<main>
+			<section id="room-name-wrapper">
+				<p style="font-weight:800 ;">Room Name: <span id="room-name"></span></p>
+			</section>
 
-    <!-- Transcriptions -->
-    <div class="glass-card transcriptions">
-      <div class="transcription-section">
-        <h2>Enter Text or Use Mic</h2>
-        <form id="textForm" class="input-row">
-  <input 
-    type="text" 
-    name="message" 
-    class="mytext" 
-    id="speechToText" 
-    placeholder="Type or speak..." 
-    style="text-transform:capitalize" 
-  />
-  <button type="button" class="mic" onclick="record()" aria-label="Use speech input">
-    <img src="{% static '/images/mic3.png' %}" alt="Mic" />
-  </button>
-  <button id="sendBtn" class="submit" type="submit">Send</button>
-</form>
+			<section id="video-streams"></section>
+
+			<section id="controls-wrapper">
+				<div class="icon-wrapper">
+					<img class="control-icon" id="mic-btn" src="{% static 'images/microphone.svg' %}" />
+				</div>
+				<div class="icon-wrapper">
+					<img class="control-icon" id="camera-btn" src="{% static 'images/video.svg' %}" />
+				</div>
+				<div class="icon-wrapper">
+					<img class="control-icon" id="leave-btn" src="{% static 'images/leave.svg' %}" />
+				</div>
+			</section>
+		</main>
+	</div>
 
 
 
-        <h2 style="font-size:1.25rem;" class="mt-4 text-center">Sign Language Animation</h2>
-        <div class="sign-video-wrapper">
-          <div class="sign-anim-controls">
-            <button class="submit" type="button" onclick="playPause()">Play/Pause</button>
-          </div>
-          <video id="videoPlayer" width="700" height="400" preload="auto" autoplay>
-            <source src="" type="video/mp4" />
-            Your browser does not support HTML5 video.
-          </video>
-        </div>
-      </div>
-    </div>
+	<div class="transcriptions">
+		<div class="transcription-section">
+			<h2 class="mobilemain">Enter Text or Use Mic</h2>
+			<h2 class="mobile">Enter Text Here</h2>
+			<br>
+			<form id="textForm">
 
-  </div>
+				<input type="text" name="message" class="mytext" id="speechToText" placeholder=""
+					style="text-transform:capitalize">
+				<button type="button" name="button" class="mic" onclick="record()"><img
+						src="{% static '/images/mic3.1.png' %}" height="32px" width="38px" /></button>
+				<button id="sendBtn" class="submit">Send</button>
+
+
+			</form>
+			<br>
+			<div id="messages" style="display: none;"></div>
+			<form action="" method="post">
+				{% csrf_token %}
+				<label style="display: none;" for="">Message</label>
+				<input type="text" style="display: none;" id="myInput" name="sen" style="text-transform: capitalize;">
+			</form>
+
+
+			<table cellspacing="20px" style="display: none;">
+				<tr>
+					<td class="td">The text that you entered is:</td>
+					<td class="td">{{ text }}</td>
+				</tr>
+				<tr>
+					<td class="td">Key words in sentence:</td>
+					<td class="td">
+						<ul class="td" id="list">
+							{% for word in words %}
+							<li id="{{ i }}" style="margin-right: 8px">{{ word }}</li>
+							{% endfor %}
+						</ul>
+					</td>
+				</tr>
+			</table>
+
+			<h2 align="center">Sign Language Animation</h2>
+
+			<div style="text-align:center" class="vidiv p-3"> &nbsp&nbsp
+				<button class="submit" onclick="playPause()">Play/Pause</button>
+
+				<!-- width="600" height="350" -->
+
+				<video id="videoPlayer" preload="auto" autoplay>
+					<source src="" type="video/mp4">
+					Your browser does not support HTML5 video.
+				</video>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
 </div>
 
+
+</div>
+
+<script type="text/javascript">
+	let url = `wss://${window.location.host}/ws/socket-server/`
+	const chatSocket = new WebSocket(url)
+	chatSocket.onmessage = function (e) {
+		let data = JSON.parse(e.data);
+		console.log('Data', data);
+
+		if (data.type === 'chat') {
+			let messages = document.getElementById('messages');
+
+			// Check if the message is already present to prevent duplicates
+			let existingMessages = [...messages.getElementsByTagName('p')].map(p => p.textContent);
+			if (!existingMessages.includes(data.message)) {
+				messages.insertAdjacentHTML('beforeend', `<div><p>${data.message}</p></div>`);
+			}
+
+			document.getElementById("myInput").value = data.message;
+
+			// Trigger animation for all users, not just sender
+			triggerAnimation(data.message);
+		}
+	};
+
+
+	let form = document.getElementById('textForm');
+	form.addEventListener('submit', (e) => {
+		e.preventDefault();
+
+		let message = e.target.message.value.trim();
+
+		if (message) { // Prevent sending empty messages
+			chatSocket.send(JSON.stringify({
+				'message': message
+			}));
+
+			// Append message only once in the UI
+			let messages = document.getElementById('messages');
+			messages.insertAdjacentHTML('beforeend', `<div><p>${message}</p></div>`);
+		}
+
+		form.reset();
+	});
+
+	//webkitSpeechRecognition api for speech to text conversion
+	function record() {
+		var speech = true;
+		window.SpeechRecognition = window.webkitSpeechRecognition;
+		const recognition = new SpeechRecognition();
+		recognition.interimResults = true;
+		recognition.addEventListener('result', e => {
+			const transcript = Array.from(e.results)
+				.map(result => result[0])
+				.map(result => result.transcript)
+			speechToText.value = transcript;
+		})
+
+		if (speech == true) {
+			recognition.start();
+		}
+	}
+	function triggerAnimation(inputText) {
+		let formData = new FormData();
+		formData.append("sen", inputText);
+
+		fetch("{% url 'animation' %}", {
+			method: "POST",
+			body: formData,
+			headers: {
+				"X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+			}
+		})
+			.then(response => response.json())
+			.then(data => {
+				console.log("Received animation data:", data);
+
+				// Display message in chat area (for double-checking)
+				let messages = document.getElementById('messages');
+				messages.insertAdjacentHTML('beforeend', `<div><p>${data.text}</p></div>`);
+
+				// Update keywords in list
+				let wordsList = document.getElementById("list");
+				wordsList.innerHTML = "";
+
+				data.words.forEach((word, index) => {
+					let li = document.createElement("li");
+					li.textContent = word;
+					li.id = "word-" + index;
+					li.style.marginRight = "8px";
+					wordsList.appendChild(li);
+				});
+
+				// Play animation
+				play();
+			})
+			.catch(error => console.error("Error:", error));
+	}
+
+
+	function play() {
+		var videoSource = new Array();
+		var videos = document.getElementById("list").getElementsByTagName("li");
+		var j;
+		for (j = 0; j < videos.length; j++) {
+			videoSource[j] = "/static/data/" + videos[j].innerHTML + ".mp4";
+		}
+
+		var i = 0; // define i
+		var videoCount = videoSource.length;
+
+		function videoPlay(videoNum) {
+			document.getElementById("list").getElementsByTagName("li")[videoNum].style.color = "#09edc7";
+			document.getElementById("list").getElementsByTagName("li")[videoNum].style.fontSize = "xx-large";
+			document.getElementById("videoPlayer").setAttribute("src", videoSource[videoNum]);
+			document.getElementById("videoPlayer").load();
+			document.getElementById("videoPlayer").play();
+
+		}
+		document.getElementById('videoPlayer').addEventListener('ended', myHandler, false);
+		document.getElementById("list").getElementsByTagName("li")[0].style.color = "#09edc7";
+		document.getElementById("list").getElementsByTagName("li")[0].style.fontSize = "xx-large";
+
+		videoPlay(0); // play the video
+
+		function myHandler() {
+			document.getElementById("list").getElementsByTagName("li")[i].style.color = "#feda6a";
+			document.getElementById("list").getElementsByTagName("li")[i].style.fontSize = "20px";
+			i++;
+			if (i == videoCount) {
+				document.getElementById("videoPlayer").pause();
+			}
+			else {
+				videoPlay(i);
+			}
+		}
+	}
+
+	function playPause() {
+		if (document.getElementById("videoPlayer").paused) {
+			play();
+		}
+		else {
+			document.getElementById("videoPlayer").pause();
+		}
+	}
+
+
+
+</script>
+
+
+
 <script type="text/javascript" src="{% static 'assets/AgoraRTC_N-4.8.0.js' %}"></script>
+
 <script type="text/javascript" src="{% static 'js/streams.js' %}"></script>
+
+
 
 {% endblock content %}
